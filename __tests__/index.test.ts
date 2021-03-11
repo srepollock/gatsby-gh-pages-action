@@ -69,11 +69,22 @@ describe('Gatsby Publish action', () => {
     )
   })
 
-  it('skips if deploy branch is the same as the current git head', async () => {
+  it('skips if deploy branch is the same as the current git head and the repo is the same', async () => {
     inputs['deploy-branch'] = 'some-ref'
     github.context.ref = 'refs/heads/some-ref'
 
     await expect(run()).resolves.not.toThrowError()
+  })
+
+  it('builds if deploy branch is the same as the current git head but the repo is not the same', async () => {
+    inputs['gatsby-args'] = ''
+    inputs['deploy-branch'] = 'some-ref'
+    inputs['deploy-repo'] = 'deploy-repo'
+    github.context.ref = 'refs/heads/some-ref'
+
+    await run()
+
+    expect(execSpy).toBeCalledWith('yarn run build', [], {cwd: '.'})
   })
 
   it('calls gatsby build without args', async () => {
@@ -81,7 +92,7 @@ describe('Gatsby Publish action', () => {
 
     await run()
 
-    expect(execSpy).toBeCalledWith('yarn run build', [])
+    expect(execSpy).toBeCalledWith('yarn run build', [], {cwd: '.'})
   })
 
   it('calls gatsby build with args', async () => {
@@ -89,6 +100,35 @@ describe('Gatsby Publish action', () => {
 
     await run()
 
-    expect(execSpy).toBeCalledWith('yarn run build', ['--', '--prefix-paths', '--no-uglify'])
+    expect(execSpy).toBeCalledWith('yarn run build', ['--', '--prefix-paths', '--no-uglify'], {cwd: '.'})
+  })
+
+  it('calls gatsby build with working-dir', async () => {
+    inputs['gatsby-args'] = ''
+    inputs['working-dir'] = '../gatsby-gh-pages-action'
+
+    await run()
+
+    expect(execSpy).toBeCalledWith('yarn run build', [], {cwd: '../gatsby-gh-pages-action'})
+  })
+
+  it('calls gatsby build with working-dir and args', async () => {
+    inputs['gatsby-args'] = '--prefix-paths --no-uglify'
+    inputs['working-dir'] = '../gatsby-gh-pages-action'
+
+    await run()
+
+    expect(execSpy).toBeCalledWith('yarn run build', ['--', '--prefix-paths', '--no-uglify'], {
+      cwd: '../gatsby-gh-pages-action',
+    })
+  })
+
+  it('calls gatsby build with wrong working-dir', async () => {
+    inputs['gatsby-args'] = ''
+    inputs['working-dir'] = './__tests__'
+
+    await run()
+
+    expect(execSpy).toBeCalledWith('npm run build', [], {cwd: './__tests__'})
   })
 })
