@@ -79,7 +79,7 @@ async function run(): Promise<void> {
       cwd: `${workingDir}/public`,
     })
 
-    await exec.exec(`git add`, ['.'], {cwd: `${workingDir}/public`})
+    await exec.exec(`git add`, ['.'], {cwd: `${workingDir}`})
     await exec.exec(`git commit`, ['-m', `deployed via Gatsby Publish Action 🎩 for ${github.context.sha}`], {
       cwd: `${workingDir}/public`,
     })
