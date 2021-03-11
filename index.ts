@@ -50,6 +50,12 @@ async function run(): Promise<void> {
       await io.cp(`${workingDir}/CNAME`, `${workingDir}/public/CNAME`, {force: true})
       console.log('Finished copying CNAME.')
     }
+    const githubActionsExists = await ioUtil.exists(`${workingDir}/.github`)
+    if (githubActionsExists) {
+      console.log('Copying GitHub Actions over.')
+      await io.cp(`${workingDir}/.github`, `${workingDir}/.github`, {recursive: true})
+      console.log('Finished copying .github.')
+    }
 
     const skipPublish = (core.getInput('skip-publish') || 'false').toUpperCase()
     if (skipPublish === 'TRUE') {
