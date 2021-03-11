@@ -51,12 +51,18 @@ async function run(): Promise<void> {
       console.log('Finished copying CNAME.')
     }
     
-    console.log("Searching for .github...")
     const githubActionsExists = await ioUtil.exists(`${workingDir}/.github`)
     if (githubActionsExists) {
       console.log('Copying GitHub Actions over.')
-      await io.cp(`${workingDir}/.github`, `${workingDir}/public/.github`, {recursive: true})
+      await io.cp(`${workingDir}/.github`, `${workingDir}/public/.github`, {recursive: true, force: true})
       console.log('Finished copying .github.')
+    }
+
+    const firebaseJson = await ioUtil.exists(`${workingDir}/firebase.json`)
+    if (firebaseJson) {
+      console.log('Copying Firebase over.')
+      await io.cp(`${workingDir}/firebase.json`, `${workingDir}/public/firebase.json`, {force: true})
+      console.log('Finished copying Firebase.')
     }
 
     const skipPublish = (core.getInput('skip-publish') || 'false').toUpperCase()
