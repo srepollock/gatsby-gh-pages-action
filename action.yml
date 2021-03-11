@@ -1,4 +1,4 @@
-name: "Gatsby Publish"
+name: "Gatsby Publish with Github Actions Copied"
 description: "Build and deploy your Gatsby site to GitHub Pages."
 branding:
   icon: "book-open"
