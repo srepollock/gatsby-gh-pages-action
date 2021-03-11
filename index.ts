@@ -55,7 +55,7 @@ async function run(): Promise<void> {
     const githubActionsExists = await ioUtil.exists(`${workingDir}/.github`)
     if (githubActionsExists) {
       console.log('Copying GitHub Actions over.')
-      await io.cp(`${workingDir}/.github`, `${workingDir}/.github`, {recursive: true})
+      await io.cp(`${workingDir}/.github`, `${workingDir}/public/.github`, {recursive: true})
       console.log('Finished copying .github.')
     }
 
@@ -79,7 +79,7 @@ async function run(): Promise<void> {
       cwd: `${workingDir}/public`,
     })
 
-    await exec.exec(`git add`, ['.'], {cwd: `${workingDir}`})
+    await exec.exec(`git add`, ['.'], {cwd: `${workingDir}/public`})
     await exec.exec(`git commit`, ['-m', `deployed via Gatsby Publish Action 🎩 for ${github.context.sha}`], {
       cwd: `${workingDir}/public`,
     })
