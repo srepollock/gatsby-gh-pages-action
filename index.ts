@@ -50,6 +50,8 @@ async function run(): Promise<void> {
       await io.cp(`${workingDir}/CNAME`, `${workingDir}/public/CNAME`, {force: true})
       console.log('Finished copying CNAME.')
     }
+    
+    console.log("Searching for .github...")
     const githubActionsExists = await ioUtil.exists(`${workingDir}/.github`)
     if (githubActionsExists) {
       console.log('Copying GitHub Actions over.')
